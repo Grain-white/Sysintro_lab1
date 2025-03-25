@@ -279,10 +279,23 @@ uint64_t compute() {
             //printf("COMPUTE_ROW_MAJOR_MNKKMN_B32\n");
             compute_row_major_mnkkmn_b32();
             break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B16:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b16();
+            break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B64:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b64();
+            break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B64_LU4:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b64_lu4();
+            break;
         case COMPUTE_ROW_MAJOR_MNK_LU2:
             //printf("COMPUTE_ROW_MAJOR_MNK_LU2\n");
             compute_row_major_mnk_lu2();
             break;
+        
         case COMPUTE_SIMD:
             //printf("COMPUTE_SIMD\n");
             compute_simd();
