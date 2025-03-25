@@ -37,7 +37,7 @@ tasks1:
 
 # task 2
 
-.PHONY: t_mnk mnkkmn_b32 mnk_lu2 grade2 tasks2
+.PHONY: t_mnk mnkkmn_b32 mnk_lu2 knmknm_b32_lu2 grade2 tasks2
 
 t_mnk: $(M)
 	@$(M) $(IN) 11 101 1
@@ -48,7 +48,13 @@ mnkkmn_b32: $(M)
 mnk_lu2: $(M)
 	@$(M) $(IN) 1 121 1
 
-grade2: t_mnk
+knmknm_b32_lu2: $(M)
+	@$(M) $(IN) 1 1 1
+
+knmmnk_b64_lu4: $(M)
+	@$(M) $(IN) 1 1 1
+
+grade2: knmknm_b32_lu2
 
 tasks2:
 	@echo Task 2
