@@ -90,17 +90,81 @@ void compute_row_major_knm() {
 }
 
 void compute_y_transpose_mnk() {
-    // TODO: task 2
+    zero_z();
+    for (int i = 0; i != m; ++i) {
+        for (int j = 0; j != n; ++j) {
+            for (int l = 0; l != k; ++l) {
+                Z[i][j] += X[i][l] * YP[j][l];
+            }
+        }
+    }
 }
 
+void compute_row_major_mnkkmn_generic(int B) {
+    zero_z();
+    for (int kk = 0; kk < k; kk += B) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                double sum = Z[i][j];
+                for (int k_ = kk; k_ < kk + B && k_ < k; k_++) {
+                    sum += X[i][k_] * Y[k_][j];
+                }
+                Z[i][j] = sum;
+            }
+        }
+    }
+}
 void compute_row_major_mnkkmn_b32() {
-    // TODO: task 2
+    compute_row_major_mnkkmn_generic(32);
 }
 
+void compute_row_major_mnkkmn_b16() {
+    compute_row_major_mnkkmn_generic(16);
+}
+void compute_row_major_mnkkmn_b64() {
+    compute_row_major_mnkkmn_generic(64);
+}
 void compute_row_major_mnk_lu2() {
-    // TODO: task 2
+    zero_z();
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            double sum = 0;
+            int k_;
+            for (k_ = 0; k_ < k - 1; k_ += 2) {
+                sum += X[i][k_] * Y[k_][j];
+                sum += X[i][k_ + 1] * Y[k_ + 1][j];
+            }
+            // Handle odd k
+            if (k_ < k) {
+                sum += X[i][k_] * Y[k_][j];
+            }
+            Z[i][j] = sum;
+        }
+    }
 }
-
+void compute_row_major_mnkkmn_b64_lu4() {
+    zero_z();
+    int B = 64;
+    for (int kk = 0; kk < k; kk += B) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                double sum = Z[i][j];
+                int k_end = (kk + B < k) ? (kk + B) : k;
+                int k_idx;
+                for (k_idx = kk; k_idx <= k_end - 4; k_idx += 4) {
+                    sum += X[i][k_idx]   * Y[k_idx][j] +
+                           X[i][k_idx+1] * Y[k_idx+1][j] +
+                           X[i][k_idx+2] * Y[k_idx+2][j] +
+                           X[i][k_idx+3] * Y[k_idx+3][j];
+                }
+                for (; k_idx < k_end; k_idx++) {
+                    sum += X[i][k_idx] * Y[k_idx][j];
+                }
+                Z[i][j] = sum;
+            }
+        }
+    }
+}
 void compute_simd() {
 #ifdef SIMD
     // TODO: task 3
@@ -157,10 +221,23 @@ uint64_t compute() {
             //printf("COMPUTE_ROW_MAJOR_MNKKMN_B32\n");
             compute_row_major_mnkkmn_b32();
             break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B16:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b16();
+            break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B64:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b64();
+            break;
+        case COMPUTE_ROW_MAJOR_MNKKMN_B64_LU4:
+            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
+            compute_row_major_mnkkmn_b64_lu4();
+            break;
         case COMPUTE_ROW_MAJOR_MNK_LU2:
             //printf("COMPUTE_ROW_MAJOR_MNK_LU2\n");
             compute_row_major_mnk_lu2();
             break;
+        
         case COMPUTE_SIMD:
             //printf("COMPUTE_SIMD\n");
             compute_simd();

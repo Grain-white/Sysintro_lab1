@@ -48,6 +48,12 @@ mnkkmn_b32: $(M)
 mnk_lu2: $(M)
 	@$(M) $(IN) 1 121 1
 
+mnkkmn_b16: $(M)
+	@$(M) $(IN) 1 131 1
+mnkkmn_b16: $(M)
+	@$(M) $(IN) 1 141 1
+mnkkmn_b64_lu4: $(M)
+	@$(M) $(IN) 1 151 1
 grade2: t_mnk
 
 tasks2:
