@@ -141,7 +141,7 @@ void compute_row_major_mnk_lu2() {
     }
 }
 
-void compute_knmknm_b32_lu2(){
+void compute_knmknm_b64_lu4(){
     zero_z();
     int B=64;
     /*for (int i = 0; i < m; i++) {
@@ -211,8 +211,7 @@ void compute_knmmnk_b64_lu4(){
                     Z[i][j] += X[i][l] * Y[l][j];
                     Z[i][j] += X[i][l+1 ] * Y[l + 1][j];
                     Z[i][j] += X[i][l+2] * Y[l + 2][j];
-                    Z[i][j] += X[i][l+3] * Y[l + 3][j];
-                             
+                    Z[i][j] += X[i][l+3] * Y[l + 3][j];           
                 }
             }
         }      
