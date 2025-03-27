@@ -130,7 +130,7 @@ void compute_row_major_mnk_lu2() {
                 Z[i][j] += X[i][k_] * Y[k_][j];
                 Z[i][j] += X[i][k_+1] * Y[k_+1][j];
             }
-    // k 为奇数时，单独处理
+
             
         
         }
@@ -267,28 +267,26 @@ void compute_simd() {
         for (i = 0; i < m; i++) {
             for (j = 0; j < n; j++) {
                 uint64_t sum = 0;
-                if (k >= 4) {
-                    for (l = 0; l <= k - 4; l += 4) {
-                        uint32x4_t vx = vld1q_u32(&X32[i][l]);
-                        uint32x4_t vy = vld1q_u32(&YP32[j][l]);
-                        uint32x2_t vx_low = vget_low_u32(vx);
-                        uint32x2_t vy_low = vget_low_u32(vy);
-                        uint64x2_t prod_low = vmull_u32(vx_low, vy_low); 
-    
-                        uint32x2_t vx_high = vget_high_u32(vx);
-                        uint32x2_t vy_high = vget_high_u32(vy);
-                        uint64x2_t prod_high = vmull_u32(vx_high, vy_high);
-                        uint64x2_t sum_vec = vaddq_u64(prod_low, prod_high);
-                        uint64_t tmp[2];
-                        vst1q_u64(tmp, sum_vec);
-                        
-                        sum += tmp[0] + tmp[1];
-                        
-
+                if (k >= 8) {
+                    for (l = 0; l <= k - 8; l += 8) {
+                        uint16x8_t vx16 = vld1q_u16(&X16[i][l]);
+                        uint16x8_t vy16 = vld1q_u16(&YP16[j][l]);
+                        uint16x4_t vx16_low = vget_low_u16(vx16);
+                        uint16x4_t vy16_low = vget_low_u16(vy16);
+                        uint16x4_t vx16_high = vget_high_u16(vx16);
+                        uint16x4_t vy16_high = vget_high_u16(vy16);
+                        uint32x4_t prod_low  = vmull_u16(vx16_low,  vy16_low);
+                        uint32x4_t prod_high = vmull_u16(vx16_high, vy16_high);
+                        uint32x4_t sum_vec = vaddq_u32(prod_low, prod_high);
+                        uint32_t tmp[4];
+                        vst1q_u32(tmp, sum_vec);
+                        sum += (uint64_t)tmp[0] + tmp[1] + tmp[2] + tmp[3];
                     }
+                } else {
+                    l = 0;
                 }
                 for (; l < k; l++) {
-                    uint64_t prod = (uint64_t)X32[i][l] * YP32[j][l];
+                    uint64_t prod = (uint64_t)X16[i][l] * (uint64_t)YP16[j][l];
                     sum += prod;
                 }
                 Z[i][j] = sum;
