@@ -1,6 +1,6 @@
-
 import sys
 import re
+import math
 
 def main():
     if len(sys.argv) < 2:
@@ -56,11 +56,16 @@ def main():
             else:
                 print(f"Warning: No match found in block {b_idx}, line {idx+1}.")
 
-    # 计算每个 kernel 的平均时间并打印
+    # 计算每个 kernel 的几何平均时间并打印
     for idx, times in enumerate(kernel_times, start=1):
         if times:
-            avg = sum(times) / len(times)
-            print(f"Kernel {idx}: Average elapsed time = {avg:.0f} ns (n={len(times)})")
+            # 计算几何平均数: exp( sum(log(x))/n )
+            try:
+                log_sum = sum(math.log(x) for x in times)
+                geo_mean = math.exp(log_sum / len(times))
+                print(f"Kernel {idx}: Geometric mean elapsed time = {geo_mean:.0f} ns (n={len(times)})")
+            except ValueError as e:
+                print(f"Kernel {idx}: Error computing geometric mean: {e}")
         else:
             print(f"Kernel {idx}: No data available.")
 
