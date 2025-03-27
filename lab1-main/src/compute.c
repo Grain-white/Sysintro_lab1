@@ -103,17 +103,13 @@ void compute_y_transpose_mnk() {
 void compute_row_major_mnkkmn_b32() {
     zero_z();
     int B=32;
-    /*for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
-            Z[i][j] = 0; 
-        }
-    }*/
+    
     for (int mm = 0; mm < m; mm += B) { 
     for (int nn = 0; nn < n; nn += B) { 
     for (int kk = 0; kk < k; kk += B) { 
         for (int l = kk; l < kk + B && l < k; ++l) {
-            for (int j = nn; j < nn + B && j < n; ++j) {   
-                for (int i = mm; i < mm + B && i < m; ++i) {
+            for (int i = mm; i < mm + B && i < m; ++i) {
+                for (int j = nn; j < nn + B && j < n; ++j) { 
                      Z[i][j]+= X[i][l] * Y[l][j];
                 }
             }
@@ -143,23 +139,18 @@ void compute_row_major_mnk_lu2() {
 
 void compute_knmknm_b64_lu4(){
     zero_z();
-    int B=64;
-    /*for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
-            Z[i][j] = 0; 
-        }
-    }*/
-    for (int kk = 0; kk < k; kk += B) { 
-    for (int nn = 0; nn < n; nn += B) { 
-    for (int mm = 0; mm < m; mm += B) { 
-        for (int l = kk; l < kk + B && l < k; ++l) {
-            for (int j = nn; j < nn + B && j < n; ++j) {   
-                for (int i = mm; i < mm + B && i < m-3; i+=4) {
+    //int B=64;
+    for (int kk = 0; kk < k; kk += 64) { 
+    for (int nn = 0; nn < n; nn += 64) { 
+    for (int mm = 0; mm < m; mm += 64) { 
+        for (int l = kk; l < kk + 64 && l<k; ++l) {
+            for (int j = nn; j < nn + 64 && j<n; ++j) {   
+                for (int i = mm; i < mm + 64 && i<m-3; i+=4) {
                     Z[i][j] += X[i][l] * Y[l][j];
-                    Z[i+1][j] += X[i+1][l ] * Y[l + 1][j];
-                    Z[i+2][j] += X[i+2][l ] * Y[l + 2][j];
-                    Z[i+3][j] += X[i+3][l ] * Y[l + 3][j];
-                if (kk == k-1){
+                    Z[i+1][j] += X[i+1][l] * Y[l][j];
+                    Z[i+2][j] += X[i+2][l] * Y[l][j];
+                    Z[i+3][j] += X[i+3][l] * Y[l][j];
+                /*if (kk == k-1){
                     int r = i - k;
                     switch (r) {
                         case 4:
@@ -172,12 +163,62 @@ void compute_knmknm_b64_lu4(){
                             Z[i][j] += X[i][k - 2] * Y[k - 2][j];
                             Z[i][j] += X[i][k - 1] * Y[k - 3][j];       
                     } 
-                }                  
+                } */                 
                 }
             }
         }      
     }
     }
+    }
+}
+void compute_knmknm_b16_lu2(){
+    zero_z(); 
+    for (int kk = 0; kk < k; kk += 8) {
+    for (int mm = 0; mm < m; mm += 8) { 
+    for (int nn = 0; nn < n; nn += 8) { 
+        for (int l = kk; l < kk + 8 && l<k; ++l) { 
+            for (int i = mm; i < mm + 8 && i<m; ++i) {
+                for (int j = nn; j < nn + 8 && j<n; ++j) {   
+                    Z[i][j] += X[i][l] * Y[l][j];
+                    //Z[i][j] += X[i][l+1] * Y[l+1][j];         
+                }
+            }
+        }      
+    }
+    }
+    }
+}
+void compute_y_t_mnk_lu4() {
+    zero_z();
+    for (int i = 0; i != m; ++i) {
+        for (int j = 0; j != n; ++j) {
+            for (int l = 0; l < k-3; l+=4) {
+                Z[i][j] += X[i][l] * YP[j][l];
+                Z[i][j] += X[i][l+1] * YP[j][l+1];
+                Z[i][j] += X[i][l+2] * YP[j][l+2];
+                Z[i][j] += X[i][l+3] * YP[j][l+3];
+            }
+        }
+    }
+}
+void compute_y_t_mnk_b64_lu4() {
+    zero_z();
+    const int B=64;
+    for (int mm = 0; mm < m; mm += B) { 
+            for (int nn = 0; nn < n; nn += B) {
+                for (int kk = 0; kk < k; kk += B) { 
+                for (int i = mm; i != mm + B &&i<m; ++i) {
+                    for (int j = nn; j != nn +B && j<n; ++j) {
+                        for (int l = kk; l < kk+B-3 && l<k-3; l+=4) {
+                            Z[i][j] += X[i][l] * YP[j][l];
+                            Z[i][j] += X[i][l+1] * YP[j][l+1];
+                            Z[i][j] += X[i][l+2] * YP[j][l+2];
+                            Z[i][j] += X[i][l+3] * YP[j][l+3];
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 void compute_knmmnk_b64_lu4(){
@@ -279,23 +320,23 @@ uint64_t compute() {
             //printf("COMPUTE_ROW_MAJOR_MNKKMN_B32\n");
             compute_row_major_mnkkmn_b32();
             break;
-        case COMPUTE_ROW_MAJOR_MNKKMN_B16:
+        case COMPUTE_ROW_MAJOR_KNMKNM_B64_LU4:
             //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
-            compute_row_major_mnkkmn_b16();
+            compute_knmknm_b64_lu4();
             break;
-        case COMPUTE_ROW_MAJOR_MNKKMN_B64:
-            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
-            compute_row_major_mnkkmn_b64();
-            break;
-        case COMPUTE_ROW_MAJOR_MNKKMN_B64_LU4:
-            //printf("COMPUTE_ROW_MAJOR_MNKKMN_B16\n");
-            compute_row_major_mnkkmn_b64_lu4();
+        case COMPUTE_ROW_MAJOR_KNMKNM_B16_LU2:
+            compute_knmknm_b16_lu2();
             break;
         case COMPUTE_ROW_MAJOR_MNK_LU2:
             //printf("COMPUTE_ROW_MAJOR_MNK_LU2\n");
             compute_row_major_mnk_lu2();
             break;
-        
+        case COMPUTE_T_MNK_LU4:
+            compute_y_t_mnk_lu4();
+            break;
+        case COMPUTE_T_MNK_B64_LU4:
+            compute_y_t_mnk_b64_lu4();
+            break;
         case COMPUTE_SIMD:
             //printf("COMPUTE_SIMD\n");
             compute_simd();
