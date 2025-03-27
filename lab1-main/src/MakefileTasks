@@ -71,16 +71,17 @@ tasks2:
 .PHONY: simd o3 simd-o3 grade3 tasks3
 
 simd: $(MS)
-	@$(MS) $(IN) 13 201 1
+	@$(MS) $(IN) 12 201 1
+# 这里改成了YP32
 
 o3: $(MO)
 	@$(MO) $(IN) 1 1 1
 
 simd-o3: $(MO)
-	@$(MO) $(IN) 13 201 1
+	@$(MO) $(IN) 12 201 1
 
-
-grade3: simd
+# 这里改成了YP32
+grade3: simd-o3
 
 tasks3:
 	@echo Task 3

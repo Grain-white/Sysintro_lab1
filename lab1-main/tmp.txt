@@ -1,0 +1,17 @@
+Kernel 1: Average elapsed time = 41824452374 ns (n=8)
+Kernel 2: Average elapsed time = 6392511520 ns (n=8)
+Kernel 3: Average elapsed time = 7438081947 ns (n=8)
+Kernel 4: Average elapsed time = 42261327251 ns (n=8)
+Kernel 5: Average elapsed time = 51932737950 ns (n=8)
+Kernel 6: Average elapsed time = 49908968936 ns (n=8)
+2
+Kernel 1: Average elapsed time = 42048116274 ns (n=8)
+Kernel 2: Average elapsed time = 6656497315 ns (n=8)
+Kernel 3: Average elapsed time = 8242244959 ns (n=8)
+Kernel 4: Average elapsed time = 41108265414 ns (n=8)
+Kernel 5: Average elapsed time = 5025715691 ns (n=8)
+3
+Kernel 1: Average elapsed time = 41675226785 ns (n=8)
+Kernel 2: Average elapsed time = 13662670219 ns (n=8)
+Kernel 3: Average elapsed time = 17013778462 ns (n=8)
+Kernel 4: Average elapsed time = 942853161 ns (n=8)

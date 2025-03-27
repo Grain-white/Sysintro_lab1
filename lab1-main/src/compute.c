@@ -261,14 +261,45 @@ void compute_knmmnk_b64_lu4(){
     }
 }
 
-
 void compute_simd() {
-#ifdef SIMD
-    // TODO: task 3
-
+    #ifdef SIMD
+        int i, j, l;
+        for (i = 0; i < m; i++) {
+            for (j = 0; j < n; j++) {
+                uint64_t sum = 0;
+                if (k >= 4) {
+                    for (l = 0; l <= k - 4; l += 4) {
+                        uint32x4_t vx = vld1q_u32(&X32[i][l]);
+                        uint32x4_t vy = vld1q_u32(&YP32[j][l]);
+                        uint32x2_t vx_low = vget_low_u32(vx);
+                        uint32x2_t vy_low = vget_low_u32(vy);
+                        uint64x2_t prod_low = vmull_u32(vx_low, vy_low); 
     
-#endif
-}
+                        uint32x2_t vx_high = vget_high_u32(vx);
+                        uint32x2_t vy_high = vget_high_u32(vy);
+                        uint64x2_t prod_high = vmull_u32(vx_high, vy_high);
+                        uint64x2_t sum_vec = vaddq_u64(prod_low, prod_high);
+                        uint64_t tmp[2];
+                        vst1q_u64(tmp, sum_vec);
+                        
+                        sum += tmp[0] + tmp[1];
+                        
+
+                    }
+                }
+                for (; l < k; l++) {
+                    uint64_t prod = (uint64_t)X32[i][l] * YP32[j][l];
+                    sum += prod;
+                }
+                Z[i][j] = sum;
+            }
+        }
+    #endif
+    }
+    
+    
+    
+
 
 uint64_t elapsed(const struct timespec start, const struct timespec end) {
     struct timespec result;
