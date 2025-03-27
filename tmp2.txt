@@ -1,0 +1,20 @@
+Group 1:
+  Kernel 1: Average elapsed time = 8092410929 ns, speedup = 1.00
+  Kernel 2: Average elapsed time = 1647719794 ns, speedup = 4.91
+  Kernel 3: Average elapsed time = 1681747336 ns, speedup = 4.81
+  Kernel 4: Average elapsed time = 8033804680 ns, speedup = 1.01
+  Kernel 5: Average elapsed time = 9169673033 ns, speedup = 0.88
+  Kernel 6: Average elapsed time = 8005743377 ns, speedup = 1.01
+
+Group 2:
+  Kernel 1: Average elapsed time = 8176525882 ns, speedup = 1.00
+  Kernel 2: Average elapsed time = 1385342766 ns, speedup = 5.90
+  Kernel 3: Average elapsed time = 1803499746 ns, speedup = 4.53
+  Kernel 4: Average elapsed time = 7985773258 ns, speedup = 1.02
+  Kernel 5: Average elapsed time = 1095851156 ns, speedup = 7.46
+
+Group 3:
+  Kernel 1: Average elapsed time = 8050349434 ns, speedup = 1.00
+  Kernel 2: Average elapsed time = 2905049073 ns, speedup = 2.77
+  Kernel 3: Average elapsed time = 2989310549 ns, speedup = 2.69
+  Kernel 4: Average elapsed time = 226177372 ns, speedup = 35.59
