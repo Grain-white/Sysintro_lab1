@@ -261,7 +261,8 @@ void compute_knmmnk_b64_lu4(){
     }
 }
 
-void compute_simd() {
+
+void compute_simd_16() {
     #ifdef SIMD
         int i, j, l;
         for (i = 0; i < m; i++) {
@@ -271,10 +272,12 @@ void compute_simd() {
                     for (l = 0; l <= k - 8; l += 8) {
                         uint16x8_t vx16 = vld1q_u16(&X16[i][l]);
                         uint16x8_t vy16 = vld1q_u16(&YP16[j][l]);
+    
                         uint16x4_t vx16_low = vget_low_u16(vx16);
                         uint16x4_t vy16_low = vget_low_u16(vy16);
                         uint16x4_t vx16_high = vget_high_u16(vx16);
                         uint16x4_t vy16_high = vget_high_u16(vy16);
+
                         uint32x4_t prod_low  = vmull_u16(vx16_low,  vy16_low);
                         uint32x4_t prod_high = vmull_u16(vx16_high, vy16_high);
                         uint32x4_t sum_vec = vaddq_u32(prod_low, prod_high);
@@ -283,7 +286,7 @@ void compute_simd() {
                         sum += (uint64_t)tmp[0] + tmp[1] + tmp[2] + tmp[3];
                     }
                 } else {
-                    l = 0;
+                    l = 0; 
                 }
                 for (; l < k; l++) {
                     uint64_t prod = (uint64_t)X16[i][l] * (uint64_t)YP16[j][l];
