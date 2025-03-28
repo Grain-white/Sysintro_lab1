@@ -64,9 +64,6 @@ tasks2:
 	@$(MAKE) t_mnk
 	@$(MAKE) mnkkmn_b32
 	@$(MAKE) mnk_lu2
-	@$(MAKE) t_mnk_b_64_lu4
-	@$(MAKE) knmknm_b16_lu2
-	@$(MAKE) knmknm_b64_lu4
 	@$(MAKE) grade2
 
 # task 3
