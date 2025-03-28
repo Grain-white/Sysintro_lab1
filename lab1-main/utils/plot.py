@@ -54,7 +54,7 @@ for i in range(num_tasks):
         data = speedup_array
 
         group_names = {1:["mnk", "mkn", "kmn", "nmk", "nkm", "knm"],
-                       2:['mnk','t_mnk', 'mnkkmn_b32', 'mnk_lu2'],
+                       2:['mnk','t_mnk', 'mnkkmn_b32', 'mnk_lu2', 't_mnk_b_64_lu4', 'knmknm_b16_lu2', 'knmknm_b64_lu4', 't_mnk_lu4'],
                        3:['mnk','simd', 'o3', 'simd=o3']}
         
         with plot_open("lab_{}".format(i+1)) as fig:
